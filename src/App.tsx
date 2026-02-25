@@ -31,9 +31,8 @@ const KEYWORD_CHIPS = [
   '"Spreadsheet" Objection',
 ] as const;
 
-const PRIMARY_BUTTON_WIDTH = 172;
-
-const primaryButtonStyle: React.CSSProperties = {
+/** Single source of truth for primary actions (Get talking points, Get answer). */
+const PRIMARY_BUTTON_STYLE: React.CSSProperties = {
   background: "linear-gradient(180deg, #0D5C63 0%, #003B3D 100%)",
   color: "white",
   border: "1px solid rgba(0,59,61,0.4)",
@@ -44,9 +43,15 @@ const primaryButtonStyle: React.CSSProperties = {
   fontSize: 14,
   whiteSpace: "nowrap",
   boxShadow: "0 2px 8px rgba(0,59,61,0.2)",
-  minWidth: PRIMARY_BUTTON_WIDTH,
+  minWidth: 172,
   height: 42,
   boxSizing: "border-box",
+};
+
+/** Applied when primary button is disabled (same for both buttons). */
+const PRIMARY_BUTTON_DISABLED: React.CSSProperties = {
+  opacity: 0.6,
+  cursor: "not-allowed",
 };
 
 export default function App() {
@@ -61,7 +66,6 @@ export default function App() {
   const [heartflowOpen, setHeartflowOpen] = useState(false);
 
   const [questionInput, setQuestionInput] = useState("");
-  const [questionAnswer, setQuestionAnswer] = useState<string | null>(null);
 
   const [notes, setNotes] = useState("");
 
@@ -206,10 +210,8 @@ export default function App() {
     setHeartflowOpen(false);
   };
 
-  const onGetAnswerClick = () => {
-    if (!questionInput.trim()) return;
-    setQuestionAnswer("AI response preview (integration coming soon)");
-  };
+  /** Get answer is a placeholder: no API call, no fetch, no errors. */
+  const onGetAnswerClick = () => {};
 
   const inputFieldStyle: React.CSSProperties = {
     width: "100%",
@@ -344,7 +346,7 @@ export default function App() {
                   boxSizing: "border-box",
                 }}
               />
-              <button type="button" onClick={() => runKeywordLookup()} style={primaryButtonStyle}>
+              <button type="button" onClick={() => runKeywordLookup()} style={PRIMARY_BUTTON_STYLE}>
                 Get talking points
               </button>
             </div>
@@ -489,7 +491,6 @@ export default function App() {
               <input
                 value={questionInput}
                 onChange={(e) => setQuestionInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && onGetAnswerClick()}
                 placeholder='For example: "Why does traceability matter?"'
                 style={{
                   flex: 1,
@@ -509,9 +510,8 @@ export default function App() {
                 disabled={!questionInput.trim()}
                 onClick={onGetAnswerClick}
                 style={{
-                  ...primaryButtonStyle,
-                  cursor: !questionInput.trim() ? "not-allowed" : "pointer",
-                  opacity: !questionInput.trim() ? 0.6 : 1,
+                  ...PRIMARY_BUTTON_STYLE,
+                  ...(!questionInput.trim() ? PRIMARY_BUTTON_DISABLED : {}),
                 }}
               >
                 Get answer
@@ -527,24 +527,6 @@ export default function App() {
             >
               This feature would use an Anthropic API key and a RAG system of company content to generate contextual answers.
             </p>
-
-            {questionAnswer && (
-              <div
-                style={{
-                  marginTop: 14,
-                  background: THEME.resultBg,
-                  border: `1px solid ${THEME.border}`,
-                  borderRadius: 12,
-                  padding: 16,
-                  fontSize: 14,
-                  lineHeight: 1.5,
-                  whiteSpace: "pre-wrap",
-                  color: THEME.primaryText,
-                }}
-              >
-                {questionAnswer}
-              </div>
-            )}
           </section>
 
           <div style={{ height: 1, background: THEME.border, margin: "24px 0" }} />
