@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import type { CSSProperties } from "react";
 
 type Section = { title: string; bullets: string[] };
 
@@ -14,12 +15,14 @@ const THEME = {
 
 /** Normalize for keyword lookup: trim, lowercase, strip trailing ?, remove quotes. */
 function normalizeKeyword(raw: string): string {
-  return raw
-    .trim()
-    .toLowerCase()
-    .replace(/\?+$/, "")
-    .replace(/"/g, "")
-    .trim() || "";
+  return (
+    raw
+      .trim()
+      .toLowerCase()
+      .replace(/\?+$/, "")
+      .replace(/"/g, "")
+      .trim() || ""
+  );
 }
 
 const KEYWORD_CHIPS = [
@@ -32,7 +35,7 @@ const KEYWORD_CHIPS = [
 ] as const;
 
 /** Single source of truth for primary actions (Get talking points, Get answer). */
-const PRIMARY_BUTTON_STYLE: React.CSSProperties = {
+const PRIMARY_BUTTON_STYLE: CSSProperties = {
   background: "linear-gradient(180deg, #0D5C63 0%, #003B3D 100%)",
   color: "white",
   border: "1px solid rgba(0,59,61,0.4)",
@@ -43,15 +46,9 @@ const PRIMARY_BUTTON_STYLE: React.CSSProperties = {
   fontSize: 14,
   whiteSpace: "nowrap",
   boxShadow: "0 2px 8px rgba(0,59,61,0.2)",
-  minWidth: 172,
+  minWidth: 172, // ensures same visual width for both buttons
   height: 42,
   boxSizing: "border-box",
-};
-
-/** Applied when primary button is disabled (same for both buttons). */
-const PRIMARY_BUTTON_DISABLED: React.CSSProperties = {
-  opacity: 0.6,
-  cursor: "not-allowed",
 };
 
 export default function App() {
@@ -66,7 +63,6 @@ export default function App() {
   const [heartflowOpen, setHeartflowOpen] = useState(false);
 
   const [questionInput, setQuestionInput] = useState("");
-
   const [notes, setNotes] = useState("");
 
   const aiSections: Section[] = useMemo(
@@ -174,15 +170,20 @@ export default function App() {
     if (key === "ai") return { sections: aiSections, showHeartflow: false };
     if (key === "agent") return { sections: agentSections, showHeartflow: false };
     if (key === "docs") return { sections: docsSections, showHeartflow: true };
-    if (key === "traceability") return { sections: traceabilitySections, showHeartflow: false };
-    if (key === "compliance vs speed") return { sections: complianceVsSpeedSections, showHeartflow: false };
-    if (key === "spreadsheet objection") return { sections: spreadsheetObjectionSections, showHeartflow: false };
+    if (key === "traceability")
+      return { sections: traceabilitySections, showHeartflow: false };
+    if (key === "compliance vs speed")
+      return { sections: complianceVsSpeedSections, showHeartflow: false };
+    if (key === "spreadsheet objection")
+      return { sections: spreadsheetObjectionSections, showHeartflow: false };
 
     return {
       sections: [
         {
           title: "No preset found",
-          bullets: ["Try: AI  •  Agent  •  Docs  •  Traceability  •  Compliance vs Speed  •  \"Spreadsheet\" Objection"],
+          bullets: [
+            'Try: AI  •  Agent  •  Docs  •  Traceability  •  Compliance vs Speed  •  "Spreadsheet" Objection',
+          ],
         },
       ],
       showHeartflow: false,
@@ -194,7 +195,8 @@ export default function App() {
   const runKeywordLookup = (fromInput?: string) => {
     const next = normalizeKeyword(fromInput ?? keywordInput);
     setActiveKeyword(next);
-    setHeartflowOpen(next === "docs" ? heartflowOpen : false);
+    // Keep HeartFlow closed unless the keyword is docs; the expand button still shows.
+    if (next !== "docs") setHeartflowOpen(false);
   };
 
   const onKeywordChipClick = (chip: string) => {
@@ -211,9 +213,11 @@ export default function App() {
   };
 
   /** Get answer is a placeholder: no API call, no fetch, no errors. */
-  const onGetAnswerClick = () => {};
+  const onGetAnswerClick = () => {
+    // Intentionally a no-op for now.
+  };
 
-  const inputFieldStyle: React.CSSProperties = {
+  const inputFieldStyle: CSSProperties = {
     width: "100%",
     padding: "8px 12px",
     borderRadius: 8,
@@ -224,6 +228,9 @@ export default function App() {
     background: "#fff",
     boxSizing: "border-box",
   };
+
+  // IMPORTANT: derived values must live OUTSIDE JSX (fixes your Vite parse error)
+  const canAnswer = questionInput.trim().length > 0;
 
   return (
     <div
@@ -273,7 +280,9 @@ export default function App() {
               }}
             >
               <div>
-                <label style={{ display: "block", fontSize: 12, color: THEME.secondaryText, marginBottom: 4 }}>Prospect Name</label>
+                <label style={{ display: "block", fontSize: 12, color: THEME.secondaryText, marginBottom: 4 }}>
+                  Prospect Name
+                </label>
                 <input
                   value={prospectName}
                   onChange={(e) => setProspectName(e.target.value)}
@@ -282,7 +291,9 @@ export default function App() {
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontSize: 12, color: THEME.secondaryText, marginBottom: 4 }}>Company</label>
+                <label style={{ display: "block", fontSize: 12, color: THEME.secondaryText, marginBottom: 4 }}>
+                  Company
+                </label>
                 <input
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
@@ -291,7 +302,9 @@ export default function App() {
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontSize: 12, color: THEME.secondaryText, marginBottom: 4 }}>Role</label>
+                <label style={{ display: "block", fontSize: 12, color: THEME.secondaryText, marginBottom: 4 }}>
+                  Role
+                </label>
                 <input
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
@@ -300,7 +313,9 @@ export default function App() {
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontSize: 12, color: THEME.secondaryText, marginBottom: 4 }}>Stage</label>
+                <label style={{ display: "block", fontSize: 12, color: THEME.secondaryText, marginBottom: 4 }}>
+                  Stage
+                </label>
                 <input
                   value={stage}
                   onChange={(e) => setStage(e.target.value)}
@@ -309,7 +324,9 @@ export default function App() {
                 />
               </div>
               <div style={{ gridColumn: "1 / -1" }}>
-                <label style={{ display: "block", fontSize: 12, color: THEME.secondaryText, marginBottom: 4 }}>Date</label>
+                <label style={{ display: "block", fontSize: 12, color: THEME.secondaryText, marginBottom: 4 }}>
+                  Date
+                </label>
                 <input
                   type="date"
                   value={callDate}
@@ -364,9 +381,7 @@ export default function App() {
               >
                 {keywordResult.sections.map((s) => (
                   <div key={s.title} style={{ marginBottom: s.bullets.length ? 14 : 0 }}>
-                    <div style={{ marginBottom: 6, fontWeight: 700, fontSize: 14 }}>
-                      {s.title}
-                    </div>
+                    <div style={{ marginBottom: 6, fontWeight: 700, fontSize: 14 }}>{s.title}</div>
                     <ul style={{ margin: 0, paddingLeft: 20, color: THEME.primaryText, fontSize: 14, lineHeight: 1.45 }}>
                       {s.bullets.map((b) => (
                         <li key={b} style={{ margin: "4px 0" }}>
@@ -398,6 +413,7 @@ export default function App() {
                         {heartflowOpen ? "▲" : "▼"}
                       </span>
                     </button>
+
                     {heartflowOpen && (
                       <div
                         style={{
@@ -436,7 +452,9 @@ export default function App() {
                             <div style={{ fontWeight: 700, marginBottom: 4 }}>{block.title}</div>
                             <ul style={{ margin: 0, paddingLeft: 20 }}>
                               {block.bullets.map((b) => (
-                                <li key={b} style={{ margin: "2px 0", lineHeight: 1.4 }}>{b}</li>
+                                <li key={b} style={{ margin: "2px 0", lineHeight: 1.4 }}>
+                                  {b}
+                                </li>
                               ))}
                             </ul>
                           </div>
@@ -454,9 +472,8 @@ export default function App() {
             <p style={{ margin: "12px 0 0", color: THEME.secondaryText, fontSize: 13 }}>
               Enter a keyword for quick bullet points.
             </p>
-            <p style={{ margin: "8px 0 0", color: THEME.secondaryText, fontSize: 13 }}>
-              Try these:
-            </p>
+            <p style={{ margin: "8px 0 0", color: THEME.secondaryText, fontSize: 13 }}>Try these:</p>
+
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
               {KEYWORD_CHIPS.map((chip) => (
                 <button
@@ -505,26 +522,28 @@ export default function App() {
                   height: 42,
                 }}
               />
+
+              {/* IMPORTANT: do NOT use disabled attr (it changes color). We simulate disabled behavior. */}
               <button
                 type="button"
-                disabled={!questionInput.trim()}
-                onClick={onGetAnswerClick}
+                aria-disabled={!canAnswer}
+                onClick={canAnswer ? onGetAnswerClick : undefined}
                 style={{
                   ...PRIMARY_BUTTON_STYLE,
-                  ...(!questionInput.trim() ? PRIMARY_BUTTON_DISABLED : {}),
+                  ...(canAnswer
+                    ? {}
+                    : {
+                        cursor: "not-allowed",
+                        pointerEvents: "none",
+                        opacity: 1, // keep identical color
+                      }),
                 }}
               >
                 Get answer
               </button>
             </div>
-            <p
-              style={{
-                margin: "8px 0 0",
-                color: THEME.secondaryText,
-                fontSize: 12,
-                lineHeight: 1.4,
-              }}
-            >
+
+            <p style={{ margin: "8px 0 0", color: THEME.secondaryText, fontSize: 12, lineHeight: 1.4 }}>
               This feature would use an Anthropic API key and a RAG system of company content to generate contextual answers.
             </p>
           </section>
