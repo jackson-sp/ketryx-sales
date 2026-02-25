@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { CSSProperties } from "react";
+import "./App.css";
 
 type Section = { title: string; bullets: string[] };
 
@@ -234,6 +235,7 @@ export default function App() {
 
   return (
     <div
+      className="app-root"
       style={{
         minHeight: "100vh",
         background: `linear-gradient(180deg, ${THEME.bg} 0%, #F0F2F2 100%)`,
@@ -243,7 +245,7 @@ export default function App() {
         color: THEME.primaryText,
       }}
     >
-      <div style={{ maxWidth: 720, margin: "0 auto" }}>
+      <div className="app-container" style={{ maxWidth: 720, margin: "0 auto" }}>
         <div style={{ marginBottom: 24 }}>
           <h1 style={{ margin: 0, fontSize: 28, letterSpacing: -0.2, fontWeight: 700 }}>
             Ketryx Sales Rapidfyre
@@ -254,6 +256,7 @@ export default function App() {
         </div>
 
         <div
+          className="app-card"
           style={{
             background: THEME.cardBg,
             backdropFilter: "blur(8px)",
@@ -269,6 +272,7 @@ export default function App() {
               Call Context
             </h2>
             <div
+              className="app-call-context-grid"
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
@@ -284,6 +288,7 @@ export default function App() {
                   Prospect Name
                 </label>
                 <input
+                  className="app-input"
                   value={prospectName}
                   onChange={(e) => setProspectName(e.target.value)}
                   placeholder="Name"
@@ -295,6 +300,7 @@ export default function App() {
                   Company
                 </label>
                 <input
+                  className="app-input"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   placeholder="Company"
@@ -306,6 +312,7 @@ export default function App() {
                   Role
                 </label>
                 <input
+                  className="app-input"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   placeholder="Role"
@@ -317,6 +324,7 @@ export default function App() {
                   Stage
                 </label>
                 <input
+                  className="app-input"
                   value={stage}
                   onChange={(e) => setStage(e.target.value)}
                   placeholder="Stage"
@@ -328,6 +336,7 @@ export default function App() {
                   Date
                 </label>
                 <input
+                  className="app-input"
                   type="date"
                   value={callDate}
                   onChange={(e) => setCallDate(e.target.value)}
@@ -344,14 +353,16 @@ export default function App() {
             <h2 style={{ margin: "0 0 12px", fontSize: 15, fontWeight: 600, color: THEME.primaryText }}>
               Keywords
             </h2>
-            <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+            <div className="app-action-row" style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
               <input
+                className="app-keyword-input"
                 value={keywordInput}
                 onChange={(e) => setKeywordInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && runKeywordLookup()}
                 placeholder="Enter a keyword for rapid talking points."
                 style={{
                   flex: 1,
+                  minWidth: 0,
                   padding: "10px 14px",
                   borderRadius: 10,
                   border: `1px solid ${THEME.border}`,
@@ -363,7 +374,7 @@ export default function App() {
                   boxSizing: "border-box",
                 }}
               />
-              <button type="button" onClick={() => runKeywordLookup()} style={PRIMARY_BUTTON_STYLE}>
+              <button type="button" className="app-primary-btn" onClick={() => runKeywordLookup()} style={PRIMARY_BUTTON_STYLE}>
                 Get talking points
               </button>
             </div>
@@ -474,7 +485,7 @@ export default function App() {
             </p>
             <p style={{ margin: "8px 0 0", color: THEME.secondaryText, fontSize: 13 }}>Try these:</p>
 
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
+            <div className="app-chips" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
               {KEYWORD_CHIPS.map((chip) => (
                 <button
                   key={chip}
@@ -504,13 +515,15 @@ export default function App() {
             <h2 style={{ margin: "0 0 12px", fontSize: 15, fontWeight: 600, color: THEME.primaryText }}>
               Ask a Question
             </h2>
-            <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+            <div className="app-action-row" style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
               <input
+                className="app-question-input"
                 value={questionInput}
                 onChange={(e) => setQuestionInput(e.target.value)}
                 placeholder='For example: "Why does traceability matter?"'
                 style={{
                   flex: 1,
+                  minWidth: 0,
                   padding: "10px 14px",
                   borderRadius: 10,
                   border: `1px solid ${THEME.border}`,
@@ -526,6 +539,7 @@ export default function App() {
               {/* IMPORTANT: do NOT use disabled attr (it changes color). We simulate disabled behavior. */}
               <button
                 type="button"
+                className="app-primary-btn"
                 aria-disabled={!canAnswer}
                 onClick={canAnswer ? onGetAnswerClick : undefined}
                 style={{
@@ -556,6 +570,7 @@ export default function App() {
               Notes
             </h2>
             <textarea
+              className="app-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Capture call notes, objections, follow-ups…"

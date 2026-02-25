@@ -1,0 +1,82 @@
+/* Mobile-first responsive overrides for Sales Rapidfyre */
+
+/* Base: ensure no horizontal overflow */
+.app-root {
+  overflow-x: hidden;
+}
+
+/* Larger touch targets and remove tap highlight on buttons */
+.app-primary-btn,
+.app-chips button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-container {
+  width: 100%;
+}
+
+/* Touch targets: minimum 44px for interactive elements */
+.app-primary-btn,
+.app-input,
+.app-keyword-input,
+.app-question-input {
+  min-height: 44px;
+}
+
+/* Mobile: single column layout and full-width buttons */
+@media (max-width: 640px) {
+  .app-root {
+    padding: 20px 16px !important;
+  }
+
+  .app-card {
+    padding: 20px 16px !important;
+  }
+
+  .app-call-context-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .app-action-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .app-action-row .app-keyword-input,
+  .app-action-row .app-question-input {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .app-primary-btn {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .app-chips {
+    gap: 8px !important;
+  }
+
+  .app-chips button {
+    min-height: 44px;
+    padding: 10px 14px !important;
+  }
+}
+
+/* Prevent zoom on input focus (iOS) - font-size at least 16px on inputs */
+@media (max-width: 640px) {
+  .app-input,
+  .app-keyword-input,
+  .app-question-input,
+  .app-notes {
+    font-size: 16px !important;
+  }
+}
+
+/* Prevent long words from overflowing on small screens */
+@media (max-width: 640px) {
+  .app-card {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+}
